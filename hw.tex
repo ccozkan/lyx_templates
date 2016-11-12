@@ -1,0 +1,135 @@
+%% LyX 2.2.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\renewcommand{\ttdefault}{cmtt}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=1cm,rmargin=1cm}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{float}
+\usepackage{units}
+\usepackage{graphicx}
+\usepackage{esint}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ME 585 Special Topics in Mech. Eng., Fall 2015}
+\chead{C. Ça\u{g}r\i{} ÖZKAN}
+\rhead{Assignment 2}
+\rfoot{Yeditepe University}
+\cfoot{\thepage}
+\lfoot{Mechanical Engineering}
+\usepackage{tikz}
+\usepackage{pgfplots}
+    % recommended as of Pgfplots 1.3:
+\pgfplotsset{compat=newest}
+
+\makeatother
+
+\usepackage{babel}
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Listing}
+
+\begin{document}
+
+\paragraph*{{\large{}Question Modification:}}
+
+Since ID=XXXXXXX9X03 the coefficients are $a=3;\:b=0;\:c=9$
+
+Therefore;
+
+$y=f(t)=3t^{2}+9$ in interval of $0,1$
+
+\section*{{\large{}Solution:}}
+
+$T=1\rightarrow\omega=\nicefrac{2\pi}{T}=2\pi$
+
+$a_{0}=\frac{2}{1}\int_{0}^{1}f(t)dt=2\int_{0}^{1}(3t^{2}+9)dt=2\left[t^{3}+9t\right]_{0}^{1}=20$
+
+$a_{n}=\frac{2}{1}\int_{0}^{1}(3t^{2}+9)cos(n\omega t)$
+
+$b_{n}=\frac{2}{1}\int_{0}^{1}(3t^{2}+9)sin(n\omega t)$
+
+Maxima is used to integrate the $f(t)*cos(2\pi n)$ and $f(t)*sin(2\pi n)$
+to get cosine and sine compliance. The commands are listed below. 
+
+\begin{lstlisting}[basicstyle={\small\ttfamily}]
+ratsimp(integrate((3*t^2+9)*cos(w*t*n),t,0,1));
+ratsimp(integrate((3*t^2+9)*sin(w*t*n),t,0,1));
+
+\end{lstlisting}
+
+\[
+a_{n}=2\times\frac{6\cdot n\cdot w\cdot\mathrm{cos}\left(n\cdot w\right)+\left(12\cdot{{n}^{2}}\cdot{{w}^{2}}-6\right)\cdot\mathrm{sin}\left(n\cdot w\right)}{{{n}^{3}}\cdot{{w}^{3}}}
+\]
+
+\[
+b_{n}=2\times\frac{-6+9\cdot{{n}^{2}}\cdot{{w}^{2}}+\left(6-12\cdot{{n}^{2}}\cdot{{w}^{2}}\right)\cdot\mathrm{cos}\left(n\cdot w\right)+6\cdot n\cdot w\cdot\mathrm{sin}\left(n\cdot w\right)}{{{n}^{3}}\cdot{{w}^{3}}}
+\]
+
+Therefore;
+
+\[
+y(t)=\frac{a_{0}}{2}+\sum_{n=1}^{100}a_{n}cos(\omega nt)+b_{n}sin(\omega nt)
+\]
+
+To simplify the output; $\pi$ is set to 3.14 therefore $\omega=6.28$
+since $\omega=2\pi$
+
+\[
+y(t)=\frac{20}{2}+\sum_{n=1}^{100}a_{n}cos(6.28nt)+b_{n}sin(6.28nt)
+\]
+
+\begin{lstlisting}[numbers=left,numberstyle={\scriptsize},basicstyle={\small\ttfamily},breaklines=true]
+sum((2*6*n*(2*3.14)*cos(n*(2*3.14))+(12*n^2*(2*3.14)^2-6)*sin(n*(2*3.14)))/(n^3*(2*3.14)^3)*cos((2*3.14)*n*t)+2*(-6+9*n^2*(2*3.14)^2+(6-12*n^2*(2*3.14)^2)*cos(n*(2*3.14))+6*n*(2*3.14)*sin(n*(2*3.14)))/(n^3*(2*3.14)^3)*sin((2*3.14)*t*n), n, 1, 100), simpsum;
+\end{lstlisting}
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=0.5\textwidth]{../YuksekLisans/muzik/grafik1aa}
+\par\end{centering}
+\caption{f(t) vs. Fourier Series}
+\end{figure}
+
+Following Octave code is used to determine intensity of each sine/cosine
+component for the frequency from $\pi$ to $10\pi$
+
+\begin{lstlisting}[numbers=left,numberstyle={\scriptsize},basicstyle={\small\ttfamily}]
+function ycos=an(n)
+  ycos=2*(6*n*2*pi*cos(n*2*pi)+(12*n^2*(2*pi)^2-6)*sin(n*2*pi))/(n^3*(2*pi)^3);
+  
+endfunction
+
+function ysin=bn(n)
+  ysin=2*(-6+9*n^2*(2*pi)^2+(6-12*n^2*(2*pi)^2)*cos(n*(2*pi))+6*n*(2*pi)*...
+  sin(n*(2*pi)))/(n^3*(2*pi)^3);
+  
+endfunction
+
+
+for i=1:1:10
+  m(i,1)=sqrt(an(i)^2+bn(i)^2);
+endfor
+
+
+f1 = fopen('~/YuksekLisans/muzik/hw3_m.dat','w');
+for i = 1:length(m)
+    fprintf(f1,'%d\n',m(i));
+end
+fclose(f1);
+\end{lstlisting}
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=0.5\textwidth]{../YuksekLisans/muzik/22}
+\par\end{centering}
+\caption{Intensity vs. frequency}
+
+\end{figure}
+
+\end{document}

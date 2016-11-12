@@ -1,0 +1,495 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ME 585 Special Topics in Mech. Eng., Fall 2015}
+\chead{C. Ça\u{g}r\i{} ÖZKAN}
+\rhead{Assignment 2}
+\rfoot{Yeditepe University}
+\cfoot{\thepage}
+\lfoot{Mechanical Engineering}
+\usepackage{tikz}
+\usepackage{pgfplots}
+    % recommended as of Pgfplots 1.3:
+\pgfplotsset{compat=newest}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "cmtt" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1cm
+\topmargin 2cm
+\rightmargin 1cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Paragraph*
+
+\series bold
+\size large
+Question Modification:
+\end_layout
+
+\begin_layout Standard
+Since ID=XXXXXXX9X03 the coefficients are 
+\begin_inset Formula $a=3;\:b=0;\:c=9$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore;
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $y=f(t)=3t^{2}+9$
+\end_inset
+
+ in interval of 
+\begin_inset Formula $0,1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\series bold
+\size large
+Solution:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $T=1\rightarrow\omega=\nicefrac{2\pi}{T}=2\pi$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $a_{0}=\frac{2}{1}\int_{0}^{1}f(t)dt=2\int_{0}^{1}(3t^{2}+9)dt=2\left[t^{3}+9t\right]_{0}^{1}=20$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $a_{n}=\frac{2}{1}\int_{0}^{1}(3t^{2}+9)cos(n\omega t)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $b_{n}=\frac{2}{1}\int_{0}^{1}(3t^{2}+9)sin(n\omega t)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Maxima is used to integrate the 
+\begin_inset Formula $f(t)*cos(2\pi n)$
+\end_inset
+
+ and 
+\begin_inset Formula $f(t)*sin(2\pi n)$
+\end_inset
+
+ to get cosine and sine compliance.
+ The commands are listed below.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\small\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+ratsimp(integrate((3*t^2+9)*cos(w*t*n),t,0,1));
+\end_layout
+
+\begin_layout Plain Layout
+
+ratsimp(integrate((3*t^2+9)*sin(w*t*n),t,0,1));
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+a_{n}=2\times\frac{6\cdot n\cdot w\cdot\mathrm{cos}\left(n\cdot w\right)+\left(12\cdot{{n}^{2}}\cdot{{w}^{2}}-6\right)\cdot\mathrm{sin}\left(n\cdot w\right)}{{{n}^{3}}\cdot{{w}^{3}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+b_{n}=2\times\frac{-6+9\cdot{{n}^{2}}\cdot{{w}^{2}}+\left(6-12\cdot{{n}^{2}}\cdot{{w}^{2}}\right)\cdot\mathrm{cos}\left(n\cdot w\right)+6\cdot n\cdot w\cdot\mathrm{sin}\left(n\cdot w\right)}{{{n}^{3}}\cdot{{w}^{3}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore;
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y(t)=\frac{a_{0}}{2}+\sum_{n=1}^{100}a_{n}cos(\omega nt)+b_{n}sin(\omega nt)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To simplify the output; 
+\begin_inset Formula $\pi$
+\end_inset
+
+ is set to 3.14 therefore 
+\begin_inset Formula $\omega=6.28$
+\end_inset
+
+ since 
+\begin_inset Formula $\omega=2\pi$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y(t)=\frac{20}{2}+\sum_{n=1}^{100}a_{n}cos(6.28nt)+b_{n}sin(6.28nt)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,numberstyle={\scriptsize},basicstyle={\small\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sum((2*6*n*(2*3.14)*cos(n*(2*3.14))+(12*n^2*(2*3.14)^2-6)*sin(n*(2*3.14)))/(n^3*(2*3.
+14)^3)*cos((2*3.14)*n*t)+2*(-6+9*n^2*(2*3.14)^2+(6-12*n^2*(2*3.14)^2)*cos(n*(2*3.14)
+)+6*n*(2*3.14)*sin(n*(2*3.14)))/(n^3*(2*3.14)^3)*sin((2*3.14)*t*n), n, 1, 100),
+ simpsum;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ../YuksekLisans/muzik/grafik1aa
+	lyxscale 50
+	width 50text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+f(t) vs.
+ Fourier Series
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Following Octave code is used to determine intensity of each sine/cosine
+ component for the frequency from 
+\begin_inset Formula $\pi$
+\end_inset
+
+ to 
+\begin_inset Formula $10\pi$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,numberstyle={\scriptsize},basicstyle={\small\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+function ycos=an(n)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ycos=2*(6*n*2*pi*cos(n*2*pi)+(12*n^2*(2*pi)^2-6)*sin(n*2*pi))/(n^3*(2*pi)^3);
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+endfunction
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function ysin=bn(n)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ysin=2*(-6+9*n^2*(2*pi)^2+(6-12*n^2*(2*pi)^2)*cos(n*(2*pi))+6*n*(2*pi)*...
+\end_layout
+
+\begin_layout Plain Layout
+
+  sin(n*(2*pi)))/(n^3*(2*pi)^3);
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+endfunction
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+for i=1:1:10
+\end_layout
+
+\begin_layout Plain Layout
+
+  m(i,1)=sqrt(an(i)^2+bn(i)^2);
+\end_layout
+
+\begin_layout Plain Layout
+
+endfor
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+f1 = fopen('~/YuksekLisans/muzik/hw3_m.dat','w');
+\end_layout
+
+\begin_layout Plain Layout
+
+for i = 1:length(m)
+\end_layout
+
+\begin_layout Plain Layout
+
+    fprintf(f1,'%d
+\backslash
+n',m(i));
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+fclose(f1);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ../YuksekLisans/muzik/22
+	lyxscale 50
+	width 50text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intensity vs.
+ frequency
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
