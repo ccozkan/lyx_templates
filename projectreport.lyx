@@ -1,0 +1,1525 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ME 477 FEA, Fall 2015}
+\chead{C. Ça\u{g}r\i{} Özkan}
+\rhead{FEM Project}
+\rfoot{Yeditepe University}
+\cfoot{\thepage}
+\lfoot{Mechanical Engineering}
+\usepackage{tikz}
+\usepackage{pgfplots}
+    % recommended as of Pgfplots 1.3:
+\pgfplotsset{compat=newest}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 3cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\series bold
+\size giant
+FE Analysis of 2D Bridge Structure
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\family typewriter
+\series default
+\size huge
+me 477 fea project, fall 2015
+\end_layout
+
+\begin_layout Author
+C.
+ Çağrı Özkan
+\end_layout
+
+\begin_layout Date
+05-I-2016
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagebreak
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Problem and Overview
+\end_layout
+
+\begin_layout Standard
+I choose the similar problem to example problem which can be found at ME
+ 477 section at unilica[dot]com.
+ The problem to deal with is how some arched bridge structure behaves under
+ load which is applied at its peak point by finite element method.
+ FEAP is used for its FE Analysis.
+ In finite element truss method will be used.
+\end_layout
+
+\begin_layout Standard
+The example geometry can be seen in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:3D-Model"
+
+\end_inset
+
+.
+ 
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Desktop/fempro/Screenshot_2016-01-03_01-19-08.png
+	lyxscale 10
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+3D Model
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:3D-Model"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In these problem given parameters are 
+\begin_inset Formula $\alpha=72^{o}$
+\end_inset
+
+ , 
+\begin_inset Formula $\hat{EOC=}\nicefrac{\alpha}{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $R=14m$
+\end_inset
+
+.
+ By knowing those properties the locations of points can be determined easily.
+ And in case of interest the element lengths can be found from Law of Cosine(Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:cos"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+a^{2}=b^{2}+c^{2}-2\:b\:c\:cos(\alpha)\label{eq:cos}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Location points in Cartesian Coordinates are found using Octave.
+ Finding A and E point locations and |AE| length are demonstrated.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\normalsize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+octave:1> A=[-14*cosd((180-72)/2);14*sind((180-72)/2)] 
+\end_layout
+
+\begin_layout Plain Layout
+
+A =
+\end_layout
+
+\begin_layout Plain Layout
+
+   -8.2290  
+\end_layout
+
+\begin_layout Plain Layout
+
+   11.3262
+\end_layout
+
+\begin_layout Plain Layout
+
+octave:2> E=[-14*cosd((180-72)/2+24);14*sind((180-72)/2+24)] 
+\end_layout
+
+\begin_layout Plain Layout
+
+E =
+\end_layout
+
+\begin_layout Plain Layout
+
+   -2.9108
+\end_layout
+
+\begin_layout Plain Layout
+
+   13.6941
+\end_layout
+
+\begin_layout Plain Layout
+
+octave:3> AE=sqrt((14^2+14^2-2*14*14*cosd(24)))
+\end_layout
+
+\begin_layout Plain Layout
+
+AE =  5.8215 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Structure is simplified as follows due to use the advantages of 2-D analysis.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Simplified-Model"
+
+\end_inset
+
+ shows the simplified 2D model.
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Desktop/fempro/1.png
+	lyxscale 10
+	width 30theight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Simplified Model
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Simplified-Model"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As it can be seen from the figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Simplified-Model"
+
+\end_inset
+
+ , this design have 5 nodes and 4 elements.
+ 
+\end_layout
+
+\begin_layout Standard
+As a material A36 steel is chosen.
+ Which has a Young's Modulus (E) 200 10
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+9
+\end_layout
+
+\end_inset
+
+[Pa].
+ Cross sectional area is chosen to be 0.1 meter-squared and squared profile,
+ also applied force chosen to be 30kN to demonstrate heavy load on the bridge
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Maximum truck load is restricted with 27 metric tones by the law in Republic
+ of Turkey.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Also fixed points which are the beginning and the end of the bridge, will
+ be used for boundary conditions of the problem.
+\end_layout
+
+\begin_layout Standard
+But with these force magnitude and material values, displacement values
+ came out to be enormous.
+ In this point I crossed with lowering the force or changing the design
+ dilemma, and I went with changing the design under same material and force
+ properties to get practical results.
+ 
+\end_layout
+
+\begin_layout Standard
+As a modification 3 nodes and 9 elements are added.
+ The coordinates of the nodes and the structure can be seen on Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Design-v2"
+
+\end_inset
+
+.
+ The modified design's nodes, elements and degree of freedoms are shown
+ in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:nedof"
+
+\end_inset
+
+.
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Desktop/fempro/2.png
+	lyxscale 10
+	width 30theight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Design-v2"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Desktop/fempro/tar/3.png
+	lyxscale 10
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:nedof"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Design v2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagebreak
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Pre-Process
+\end_layout
+
+\begin_layout Standard
+To solve the problem input file is created in favorite text editor.
+ Even though odd look of it, it just contains the info about its nodes coordinat
+es, elements that are created between these nodes and material properties
+ of those elements, applied force magnitude and its whereabouts, boundary
+ conditions and lastly what we hope to get from analysis.
+ The input file can be seen below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,numberstyle={\footnotesize},basicstyle={\normalsize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+FEAP * *  2-D Bridge Structure
+\end_layout
+
+\begin_layout Plain Layout
+
+  0 0 0 2 2 2
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+MATErial,1
+\end_layout
+
+\begin_layout Plain Layout
+
+  TRUSS
+\end_layout
+
+\begin_layout Plain Layout
+
+    ELAStic ISOTropic 200e9
+\end_layout
+
+\begin_layout Plain Layout
+
+    CROSs SECTion     0.1
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+COORdinates
+\end_layout
+
+\begin_layout Plain Layout
+
+  1 0 -8.2 11.3
+\end_layout
+
+\begin_layout Plain Layout
+
+  2 0 -2.9 13.7
+\end_layout
+
+\begin_layout Plain Layout
+
+  3 0 0.0 14.0
+\end_layout
+
+\begin_layout Plain Layout
+
+  4 0 2.9 13.7
+\end_layout
+
+\begin_layout Plain Layout
+
+  5 0 8.2 11.3
+\end_layout
+
+\begin_layout Plain Layout
+
+  6 0 -4.1 11.3
+\end_layout
+
+\begin_layout Plain Layout
+
+  7 0 0.0 11.3
+\end_layout
+
+\begin_layout Plain Layout
+
+  8 0 4.1 11.3 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ELEMents
+\end_layout
+
+\begin_layout Plain Layout
+
+  1 0 1 1 2
+\end_layout
+
+\begin_layout Plain Layout
+
+  2 0 1 2 3
+\end_layout
+
+\begin_layout Plain Layout
+
+  3 0 1 3 4
+\end_layout
+
+\begin_layout Plain Layout
+
+  4 0 1 4 5
+\end_layout
+
+\begin_layout Plain Layout
+
+  5 0 1 1 6
+\end_layout
+
+\begin_layout Plain Layout
+
+  6 0 1 6 7
+\end_layout
+
+\begin_layout Plain Layout
+
+  7 0 1 7 8
+\end_layout
+
+\begin_layout Plain Layout
+
+  8 0 1 8 5
+\end_layout
+
+\begin_layout Plain Layout
+
+  9 0 1 6 2
+\end_layout
+
+\begin_layout Plain Layout
+
+  10 0 1 2 7
+\end_layout
+
+\begin_layout Plain Layout
+
+  11 0 1 7 3
+\end_layout
+
+\begin_layout Plain Layout
+
+  12 0 1 3 8
+\end_layout
+
+\begin_layout Plain Layout
+
+  13 0 1 8 4
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+BOUNdary restraints
+\end_layout
+
+\begin_layout Plain Layout
+
+  1 0 1 1
+\end_layout
+
+\begin_layout Plain Layout
+
+  5 0 1 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+FORCe
+\end_layout
+
+\begin_layout Plain Layout
+
+  3 0 0.0 -30000.0
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+END
+\end_layout
+
+\begin_layout Plain Layout
+
+TIE
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+BATCH
+\end_layout
+
+\begin_layout Plain Layout
+
+  TANG,,1
+\end_layout
+
+\begin_layout Plain Layout
+
+  DISPlacement ALL
+\end_layout
+
+\begin_layout Plain Layout
+
+  STRESs       ALL
+\end_layout
+
+\begin_layout Plain Layout
+
+  REACtion     ALL
+\end_layout
+
+\begin_layout Plain Layout
+
+  PLOT  MESH
+\end_layout
+
+\begin_layout Plain Layout
+
+  PLOT LOAD 1,-1
+\end_layout
+
+\begin_layout Plain Layout
+
+  PLOT  CONT   1
+\end_layout
+
+\begin_layout Plain Layout
+
+END
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+INTEractive
+\end_layout
+
+\begin_layout Plain Layout
+
+STOP
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+According to these input file mesh created by FEAP can be seen on Figure
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Mesh"
+
+\end_inset
+
+.
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Desktop/fempro/tar/truss dosyasi/mesh.png
+	lyxscale 10
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Mesh
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Mesh"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagebreak
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\noindent
+Post-process & Conclusion
+\end_layout
+
+\begin_layout Standard
+After the solution is run, output file file and colorized picture for displaceme
+nts are created [Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Colorized-Displacement"
+
+\end_inset
+
+].
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Desktop/fempro/tar/truss dosyasi/trus.png
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Colorized Displacement
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Colorized-Displacement"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since output file is 228 lines long; only the interested sections of it
+ is posted below.
+ Full version can be found at 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://pastebin.com/tduNBxsi
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Following section of output file contains information about nodal displacements.
+ If results would be discussed they are practical since their very small
+ values.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\small\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+ FEAP * * 2-D Bridge Structure                                         
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  N o d a l   D i s p l a c e m e n t s     Time       0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+                                            Prop.
+ Ld.
+  1.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    Node     1 Coord     2 Coord     1 Displ     2 Displ
+\end_layout
+
+\begin_layout Plain Layout
+
+       1 -8.2000E+00  1.1300E+01  0.0000E+00  0.0000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+       2 -2.9000E+00  1.3700E+01  4.0536E-06 -3.4595E-05
+\end_layout
+
+\begin_layout Plain Layout
+
+       3  0.0000E+00  1.4000E+01 -1.3559E-06 -4.7185E-05
+\end_layout
+
+\begin_layout Plain Layout
+
+       4  2.9000E+00  1.3700E+01 -4.0293E-06 -3.4542E-05
+\end_layout
+
+\begin_layout Plain Layout
+
+       5  8.2000E+00  1.1300E+01  0.0000E+00  0.0000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+       6 -4.1000E+00  1.1300E+01 -6.3707E-07 -3.2250E-05
+\end_layout
+
+\begin_layout Plain Layout
+
+       7  0.0000E+00  1.1300E+01 -1.2741E-06 -4.5796E-05
+\end_layout
+
+\begin_layout Plain Layout
+
+       8  4.1000E+00  1.1300E+01  6.3707E-07 -3.4255E-05
+\end_layout
+
+\begin_layout Plain Layout
+
+ *Command   3 * stre ALL            v:   0.00       0.00       0.00    
+\end_layout
+
+\begin_layout Plain Layout
+
+                                                           t=     0.01  
+   0.00
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Following section of output file contains information about force and strain.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\normalsize\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+ FEAP * * 2-D Bridge Structure                                         
+          
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+         Truss Element
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ Elmt Matl    1-coord    2-coord    3-coord     Force         Strain   
+       Flux
+\end_layout
+
+\begin_layout Plain Layout
+
+    1    1 -5.550E+00  1.250E+01  0.000E+00  -3.63630E+04  -1.81815E-06   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    2    1 -1.450E+00  1.385E+01  0.000E+00  -4.57987E+04  -2.28993E-06   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    3    1  1.450E+00  1.385E+01  0.000E+00  -2.71669E+04  -1.35835E-06   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    4    1  5.550E+00  1.250E+01  0.000E+00  -3.63630E+04  -1.81815E-06   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    5    1 -6.150E+00  1.130E+01  0.000E+00  -3.10764E+03  -1.55382E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    6    1 -2.050E+00  1.130E+01  0.000E+00  -3.10764E+03  -1.55382E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    7    1  2.050E+00  1.130E+01  0.000E+00   9.32292E+03   4.66146E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    8    1  6.150E+00  1.130E+01  0.000E+00  -3.10764E+03  -1.55382E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+    9    1 -3.500E+00  1.250E+01  0.000E+00   6.35275E-11   3.17637E-21   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+   10    1 -1.450E+00  1.250E+01  0.000E+00   1.61353E+04   8.06766E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+   11    1  0.000E+00  1.265E+01  0.000E+00  -1.02874E+04  -5.14368E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+   12    1  2.050E+00  1.265E+01  0.000E+00  -2.21905E+04  -1.10952E-06   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+   13    1  3.500E+00  1.250E+01  0.000E+00   1.36451E+04   6.82255E-07   0.00000E+00
+\end_layout
+
+\begin_layout Plain Layout
+
+ *Command   4 * reac ALL            v:   0.00       0.00       0.00    
+\end_layout
+
+\begin_layout Plain Layout
+
+                                                           t=     0.01  
+   0.00
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It should be noted that force can lead to stress with easy algebra.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sigma=\frac{F}{A}
+\]
+
+\end_inset
+
+ Basic manipulation gives 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ values as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\normalsize\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+octave:2> Force/0.1
+\end_layout
+
+\begin_layout Plain Layout
+
+ans =
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  -3.6400e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+  -4.5800e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+  -2.7200e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+  -3.6400e+04
+\end_layout
+
+\begin_layout Plain Layout
+
+  -3.1100e+04
+\end_layout
+
+\begin_layout Plain Layout
+
+  -3.1100e+04
+\end_layout
+
+\begin_layout Plain Layout
+
+   9.3200e+04
+\end_layout
+
+\begin_layout Plain Layout
+
+  -3.1100e+04
+\end_layout
+
+\begin_layout Plain Layout
+
+   6.3500e-10
+\end_layout
+
+\begin_layout Plain Layout
+
+   1.6100e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+  -1.0300e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+  -2.2000e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+   1.3600e+05
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which is safe since yield strength of A 36 steel is 260 MPa.
+\end_layout
+
+\begin_layout Standard
+Following section of output file contains information about nodal reactions.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+ FEAP * * 2-D Bridge Structure                                         
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  N o d a l    R e a c t i o n s
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   Node       1 dof       2 dof
+\end_layout
+
+\begin_layout Plain Layout
+
+      1  3.6233E+04  1.5000E+04
+\end_layout
+
+\begin_layout Plain Layout
+
+      2 -4.9113E-11  6.0027E-11
+\end_layout
+
+\begin_layout Plain Layout
+
+      3  2.9104E-11 -3.0000E+04
+\end_layout
+
+\begin_layout Plain Layout
+
+      4 -5.0932E-11  1.2733E-11
+\end_layout
+
+\begin_layout Plain Layout
+
+      5 -3.6233E+04  1.5000E+04
+\end_layout
+
+\begin_layout Plain Layout
+
+      6 -4.1598E-11 -5.6821E-11
+\end_layout
+
+\begin_layout Plain Layout
+
+      7  7.2760E-12 -4.0018E-11
+\end_layout
+
+\begin_layout Plain Layout
+
+      8  1.2733E-11  3.0923E-11
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ Pr.Sum -7.0372E-12  1.3870E-12
+\end_layout
+
+\begin_layout Plain Layout
+
+   Sum  -7.0372E-12  1.3870E-12
+\end_layout
+
+\begin_layout Plain Layout
+
+  |Sum|  7.2465E+04  6.0000E+04
+\end_layout
+
+\begin_layout Plain Layout
+
+   Energy: Displacements * Reactions =     1.415548070137809E+00
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Very small reactions except node 1 and 5 which are bridge's beginning and
+ end points.
+ It can be seen that nodal reactions are very small except node 1 and 5
+ which are bridge's beginning and end points and therefore fixed.
+\end_layout
+
+\begin_layout Standard
+In conclusion modified bridge structure definitely can be considered safe
+ since displacement, stress and node reactions are allowable.
+ I choose FEAP over Pyfem for the analysis for practical reasons.
+ FEAP was good enough to gave those results without too much struggle; but
+ I would like to deal with Pyfem in future.
+ 
+\end_layout
+
+\end_body
+\end_document

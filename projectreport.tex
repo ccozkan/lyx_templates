@@ -1,0 +1,368 @@
+%% LyX 2.2.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{float}
+\usepackage{units}
+\usepackage{url}
+\usepackage{graphicx}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ME 477 FEA, Fall 2015}
+\chead{C. Ça\u{g}r\i{} Özkan}
+\rhead{FEM Project}
+\rfoot{Yeditepe University}
+\cfoot{\thepage}
+\lfoot{Mechanical Engineering}
+\usepackage{tikz}
+\usepackage{pgfplots}
+    % recommended as of Pgfplots 1.3:
+\pgfplotsset{compat=newest}
+
+\@ifundefined{showcaptionsetup}{}{%
+ \PassOptionsToPackage{caption=false}{subfig}}
+\usepackage{subfig}
+\makeatother
+
+\usepackage{babel}
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Listing}
+
+\begin{document}
+
+\title{\textbf{\Huge{}FE Analysis of 2D Bridge Structure}\\
+\textbf{\Huge{}}\\
+\texttt{\huge{}me 477 fea project, fall 2015}}
+
+\author{C. Ça\u{g}r\i{} Özkan}
+
+\date{05-I-2016}
+
+\maketitle
+\pagebreak
+
+\section{Problem and Overview}
+
+I choose the similar problem to example problem which can be found
+at ME 477 section at unilica{[}dot{]}com. The problem to deal with
+is how some arched bridge structure behaves under load which is applied
+at its peak point by finite element method. FEAP is used for its FE
+Analysis. In finite element truss method will be used.
+
+The example geometry can be seen in Figure \ref{fig:3D-Model}. 
+
+\begin{center}
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=0.6\textwidth]{Desktop/fempro/Screenshot_2016-01-03_01-19-08}
+\par\end{centering}
+\caption{3D Model\label{fig:3D-Model}}
+
+\end{figure}
+\par\end{center}
+
+In these problem given parameters are $\alpha=72^{o}$ , $\hat{EOC=}\nicefrac{\alpha}{3}$
+and $R=14m$. By knowing those properties the locations of points
+can be determined easily. And in case of interest the element lengths
+can be found from Law of Cosine(Eq. \ref{eq:cos})
+
+\begin{equation}
+a^{2}=b^{2}+c^{2}-2\:b\:c\:cos(\alpha)\label{eq:cos}
+\end{equation}
+
+Location points in Cartesian Coordinates are found using Octave. Finding
+A and E point locations and |AE| length are demonstrated. 
+
+\begin{lstlisting}[basicstyle={\normalsize\ttfamily},breaklines=true]
+octave:1> A=[-14*cosd((180-72)/2);14*sind((180-72)/2)] 
+A =
+   -8.2290  
+   11.3262
+octave:2> E=[-14*cosd((180-72)/2+24);14*sind((180-72)/2+24)] 
+E =
+   -2.9108
+   13.6941
+octave:3> AE=sqrt((14^2+14^2-2*14*14*cosd(24)))
+AE =  5.8215 
+\end{lstlisting}
+
+Structure is simplified as follows due to use the advantages of 2-D
+analysis. Figure \ref{fig:Simplified-Model} shows the simplified
+2D model.
+
+\begin{center}
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=0.3\textheight]{Desktop/fempro/1}
+\par\end{centering}
+\caption{Simplified Model\label{fig:Simplified-Model}}
+
+\end{figure}
+\par\end{center}
+
+As it can be seen from the figure \ref{fig:Simplified-Model} , this
+design have 5 nodes and 4 elements. 
+
+As a material A36 steel is chosen. Which has a Young's Modulus (E)
+200 10\textsuperscript{9}{[}Pa{]}. Cross sectional area is chosen
+to be 0.1 meter-squared and squared profile, also applied force chosen
+to be 30kN to demonstrate heavy load on the bridge\footnote{Maximum truck load is restricted with 27 metric tones by the law in
+Republic of Turkey.}.
+
+Also fixed points which are the beginning and the end of the bridge,
+will be used for boundary conditions of the problem.
+
+But with these force magnitude and material values, displacement values
+came out to be enormous. In this point I crossed with lowering the
+force or changing the design dilemma, and I went with changing the
+design under same material and force properties to get practical results. 
+
+As a modification 3 nodes and 9 elements are added. The coordinates
+of the nodes and the structure can be seen on Figure \ref{fig:Design-v2}.
+The modified design's nodes, elements and degree of freedoms are shown
+in Figure \ref{fig:nedof}.
+
+\begin{center}
+\begin{figure}[H]
+\begin{centering}
+\subfloat[\label{fig:Design-v2}]{\begin{centering}
+\includegraphics[width=0.3\textheight]{Desktop/fempro/2}
+\par\end{centering}
+}
+\par\end{centering}
+\begin{centering}
+\subfloat[\label{fig:nedof}]{\begin{centering}
+\includegraphics[width=0.6\textwidth]{Desktop/fempro/tar/3}
+\par\end{centering}
+}
+\par\end{centering}
+\caption{Design v2}
+
+\end{figure}
+\par\end{center}
+
+\pagebreak
+
+\section{Pre-Process}
+
+To solve the problem input file is created in favorite text editor.
+Even though odd look of it, it just contains the info about its nodes
+coordinates, elements that are created between these nodes and material
+properties of those elements, applied force magnitude and its whereabouts,
+boundary conditions and lastly what we hope to get from analysis.
+The input file can be seen below.
+
+\begin{lstlisting}[numbers=left,numberstyle={\footnotesize},basicstyle={\normalsize\ttfamily},breaklines=true]
+FEAP * *  2-D Bridge Structure
+  0 0 0 2 2 2
+
+
+MATErial,1
+  TRUSS
+    ELAStic ISOTropic 200e9
+    CROSs SECTion     0.1
+
+COORdinates
+  1 0 -8.2 11.3
+  2 0 -2.9 13.7
+  3 0 0.0 14.0
+  4 0 2.9 13.7
+  5 0 8.2 11.3
+  6 0 -4.1 11.3
+  7 0 0.0 11.3
+  8 0 4.1 11.3 
+
+ELEMents
+  1 0 1 1 2
+  2 0 1 2 3
+  3 0 1 3 4
+  4 0 1 4 5
+  5 0 1 1 6
+  6 0 1 6 7
+  7 0 1 7 8
+  8 0 1 8 5
+  9 0 1 6 2
+  10 0 1 2 7
+  11 0 1 7 3
+  12 0 1 3 8
+  13 0 1 8 4
+
+BOUNdary restraints
+  1 0 1 1
+  5 0 1 1
+
+FORCe
+  3 0 0.0 -30000.0
+
+END
+TIE
+
+BATCH
+  TANG,,1
+  DISPlacement ALL
+  STRESs       ALL
+  REACtion     ALL
+  PLOT  MESH
+  PLOT LOAD 1,-1
+  PLOT  CONT   1
+END
+
+
+INTEractive
+STOP
+\end{lstlisting}
+
+According to these input file mesh created by FEAP can be seen on
+Figure\ref{fig:Mesh}.
+
+\begin{center}
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=0.6\textwidth]{\string"Desktop/fempro/tar/truss dosyasi/mesh\string".eps}
+\par\end{centering}
+\caption{Mesh\label{fig:Mesh}}
+
+\end{figure}
+\par\end{center}
+
+\pagebreak
+
+\section{Post-process \& Conclusion}
+
+After the solution is run, output file file and colorized picture
+for displacements are created {[}Figure \ref{fig:Colorized-Displacement}{]}.
+
+\begin{center}
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=0.8\textwidth]{\string"Desktop/fempro/tar/truss dosyasi/trus\string".eps}
+\par\end{centering}
+\caption{Colorized Displacement\label{fig:Colorized-Displacement}}
+
+\end{figure}
+\par\end{center}
+
+Since output file is 228 lines long; only the interested sections
+of it is posted below. Full version can be found at \url{http://pastebin.com/tduNBxsi}.
+
+Following section of output file contains information about nodal
+displacements. If results would be discussed they are practical since
+their very small values. 
+
+\begin{lstlisting}[basicstyle={\small\ttfamily}]
+ FEAP * * 2-D Bridge Structure                                                 
+
+  N o d a l   D i s p l a c e m e n t s     Time       0.00000E+00
+                                            Prop. Ld.  1.00000E+00
+
+    Node     1 Coord     2 Coord     1 Displ     2 Displ
+       1 -8.2000E+00  1.1300E+01  0.0000E+00  0.0000E+00
+       2 -2.9000E+00  1.3700E+01  4.0536E-06 -3.4595E-05
+       3  0.0000E+00  1.4000E+01 -1.3559E-06 -4.7185E-05
+       4  2.9000E+00  1.3700E+01 -4.0293E-06 -3.4542E-05
+       5  8.2000E+00  1.1300E+01  0.0000E+00  0.0000E+00
+       6 -4.1000E+00  1.1300E+01 -6.3707E-07 -3.2250E-05
+       7  0.0000E+00  1.1300E+01 -1.2741E-06 -4.5796E-05
+       8  4.1000E+00  1.1300E+01  6.3707E-07 -3.4255E-05
+ *Command   3 * stre ALL            v:   0.00       0.00       0.00    
+                                                           t=     0.01     0.00
+\end{lstlisting}
+
+Following section of output file contains information about force
+and strain. 
+
+\begin{lstlisting}[basicstyle={\normalsize\ttfamily}]
+ FEAP * * 2-D Bridge Structure                                                   
+
+         Truss Element
+
+ Elmt Matl    1-coord    2-coord    3-coord     Force         Strain          Flux
+    1    1 -5.550E+00  1.250E+01  0.000E+00  -3.63630E+04  -1.81815E-06   0.00000E+00
+    2    1 -1.450E+00  1.385E+01  0.000E+00  -4.57987E+04  -2.28993E-06   0.00000E+00
+    3    1  1.450E+00  1.385E+01  0.000E+00  -2.71669E+04  -1.35835E-06   0.00000E+00
+    4    1  5.550E+00  1.250E+01  0.000E+00  -3.63630E+04  -1.81815E-06   0.00000E+00
+    5    1 -6.150E+00  1.130E+01  0.000E+00  -3.10764E+03  -1.55382E-07   0.00000E+00
+    6    1 -2.050E+00  1.130E+01  0.000E+00  -3.10764E+03  -1.55382E-07   0.00000E+00
+    7    1  2.050E+00  1.130E+01  0.000E+00   9.32292E+03   4.66146E-07   0.00000E+00
+    8    1  6.150E+00  1.130E+01  0.000E+00  -3.10764E+03  -1.55382E-07   0.00000E+00
+    9    1 -3.500E+00  1.250E+01  0.000E+00   6.35275E-11   3.17637E-21   0.00000E+00
+   10    1 -1.450E+00  1.250E+01  0.000E+00   1.61353E+04   8.06766E-07   0.00000E+00
+   11    1  0.000E+00  1.265E+01  0.000E+00  -1.02874E+04  -5.14368E-07   0.00000E+00
+   12    1  2.050E+00  1.265E+01  0.000E+00  -2.21905E+04  -1.10952E-06   0.00000E+00
+   13    1  3.500E+00  1.250E+01  0.000E+00   1.36451E+04   6.82255E-07   0.00000E+00
+ *Command   4 * reac ALL            v:   0.00       0.00       0.00    
+                                                           t=     0.01     0.00
+\end{lstlisting}
+
+It should be noted that force can lead to stress with easy algebra.
+
+\[
+\sigma=\frac{F}{A}
+\]
+ Basic manipulation gives $\sigma$ values as follows:
+
+\begin{lstlisting}[basicstyle={\normalsize\ttfamily}]
+octave:2> Force/0.1
+ans =
+
+  -3.6400e+05
+  -4.5800e+05
+  -2.7200e+05
+  -3.6400e+04
+  -3.1100e+04
+  -3.1100e+04
+   9.3200e+04
+  -3.1100e+04
+   6.3500e-10
+   1.6100e+05
+  -1.0300e+05
+  -2.2000e+05
+   1.3600e+05
+\end{lstlisting}
+
+Which is safe since yield strength of A 36 steel is 260 MPa.
+
+Following section of output file contains information about nodal
+reactions. 
+
+\begin{lstlisting}
+ FEAP * * 2-D Bridge Structure                                                 
+
+  N o d a l    R e a c t i o n s
+
+   Node       1 dof       2 dof
+      1  3.6233E+04  1.5000E+04
+      2 -4.9113E-11  6.0027E-11
+      3  2.9104E-11 -3.0000E+04
+      4 -5.0932E-11  1.2733E-11
+      5 -3.6233E+04  1.5000E+04
+      6 -4.1598E-11 -5.6821E-11
+      7  7.2760E-12 -4.0018E-11
+      8  1.2733E-11  3.0923E-11
+
+ Pr.Sum -7.0372E-12  1.3870E-12
+   Sum  -7.0372E-12  1.3870E-12
+  |Sum|  7.2465E+04  6.0000E+04
+   Energy: Displacements * Reactions =     1.415548070137809E+00
+\end{lstlisting}
+
+Very small reactions except node 1 and 5 which are bridge's beginning
+and end points. It can be seen that nodal reactions are very small
+except node 1 and 5 which are bridge's beginning and end points and
+therefore fixed.
+
+In conclusion modified bridge structure definitely can be considered
+safe since displacement, stress and node reactions are allowable.
+I choose FEAP over Pyfem for the analysis for practical reasons. FEAP
+was good enough to gave those results without too much struggle; but
+I would like to deal with Pyfem in future. 
+\end{document}
